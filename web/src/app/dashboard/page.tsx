@@ -5,37 +5,126 @@ import { ShimmerButton } from "@/components/ui/shimmer-button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Flame, Activity, Wifi, WifiOff } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
+import * as THREE from "three"
 
 interface IMUData {
   yaw: number
   pitch: number
   roll: number
-  axis: { x: number; y: number; z: number }
-  up: { x: number; y: number; z: number }
-  connected: boolean
 }
 
 export default function Dashboard() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const [imuData, setImuData] = useState<IMUData>({
-    yaw: 0,
-    pitch: 0,
-    roll: 0,
-    axis: { x: 0, y: 0, z: 0 },
-    up: { x: 0, y: 0, z: 0 },
-    connected: false
+  const mountRef = useRef<HTMLDivElement>(null)
+
+  const payloadRef = useRef<THREE.Mesh | null>(null)
+  const forwardArrowRef = useRef<THREE.ArrowHelper | null>(null)
+  const upArrowRef = useRef<THREE.ArrowHelper | null>(null)
+
+  const [imuData,setImuData] = useState<IMUData>({
+    yaw:0,
+    pitch:0,
+    roll:0
   })
 
-  const [connected, setConnected] = useState(false)
+  const [connected,setConnected] = useState(false)
 
-  // fetch IMU data
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
+  // ======================
+  // THREE SCENE
+  // ======================
+
+  useEffect(()=>{
+
+    const mount = mountRef.current
+    if(!mount) return
+
+    const scene = new THREE.Scene()
+    scene.background = new THREE.Color(0x141418)
+
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      1000/650,
+      0.1,
+      1000
+    )
+
+    camera.position.set(-6,3,-6)
+    camera.lookAt(0,0,0)
+
+    const renderer = new THREE.WebGLRenderer({antialias:true})
+    renderer.setSize(1000,650)
+    renderer.setPixelRatio(window.devicePixelRatio)
+
+    mount.appendChild(renderer.domElement)
+
+    // lights
+    scene.add(new THREE.AmbientLight(0xffffff,0.6))
+
+    const light = new THREE.DirectionalLight(0xffffff,0.8)
+    light.position.set(5,10,5)
+    scene.add(light)
+
+    // payload box
+    const geometry = new THREE.BoxGeometry(4,1,2)
+    const material = new THREE.MeshStandardMaterial({
+      color:0xdc2626,
+      roughness:0.6
+    })
+
+    const payload = new THREE.Mesh(geometry,material)
+    scene.add(payload)
+    payloadRef.current = payload
+
+    // arrows
+    const forwardArrow = new THREE.ArrowHelper(
+      new THREE.Vector3(1,0,0),
+      new THREE.Vector3(0,0,0),
+      3,
+      0x22c55e
+    )
+
+    const upArrow = new THREE.ArrowHelper(
+      new THREE.Vector3(0,1,0),
+      new THREE.Vector3(0,0,0),
+      3,
+      0x06b6d4
+    )
+
+    scene.add(forwardArrow)
+    scene.add(upArrow)
+
+    forwardArrowRef.current = forwardArrow
+    upArrowRef.current = upArrow
+
+    // grid
+    scene.add(new THREE.GridHelper(20,20,0x444444,0x222222))
+
+    const animate = ()=>{
+      renderer.render(scene,camera)
+      requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    return ()=>{
+      mount.removeChild(renderer.domElement)
+    }
+
+  },[])
+
+  // ======================
+  // IMU DATA FETCH
+  // ======================
+
+  useEffect(()=>{
+
+    const interval = setInterval(async()=>{
+
+      try{
+
         const res = await fetch("/api/imu-data")
 
-        if (!res.ok) {
+        if(!res.ok){
           setConnected(false)
           return
         }
@@ -44,164 +133,77 @@ export default function Dashboard() {
 
         setImuData(data)
         setConnected(true)
-      } catch {
+
+      }catch{
         setConnected(false)
       }
-    }, 50)
 
-    return () => clearInterval(interval)
-  }, [])
+    },50)
 
-  // rendering
-  useEffect(() => {
+    return ()=>clearInterval(interval)
 
-    const canvas = canvasRef.current
-    if (!canvas) return
+  },[])
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
+  // ======================
+  // APPLY ROTATION (Quaternion)
+  // ======================
 
-    const w = canvas.width
-    const h = canvas.height
+  useEffect(()=>{
 
-    ctx.fillStyle = "#14141a"
-    ctx.fillRect(0,0,w,h)
+    const payload = payloadRef.current
+    const forwardArrow = forwardArrowRef.current
+    const upArrow = upArrowRef.current
 
-    if (!imuData.connected) {
+    if(!payload || !forwardArrow || !upArrow) return
 
-      ctx.fillStyle = "#6b7280"
-      ctx.font = "18px sans-serif"
-      ctx.textAlign = "center"
-      ctx.fillText("IMU Disconnected", w/2, h/2)
+    const yaw = THREE.MathUtils.degToRad(imuData.yaw)
+    const pitch = THREE.MathUtils.degToRad(imuData.pitch)
+    const roll = THREE.MathUtils.degToRad(imuData.roll)
 
-      return
-    }
+    // ===== same math as python =====
 
-    const scale = 120
+    let axis = new THREE.Vector3(
+      Math.cos(pitch)*Math.cos(yaw),
+      Math.sin(pitch),
+      Math.cos(pitch)*Math.sin(yaw)
+    )
 
-    const cam = {x:-1,y:-0.3,z:-1}
-    const camLen = Math.hypot(cam.x,cam.y,cam.z)
+    let up = new THREE.Vector3(
+      -Math.sin(roll)*Math.sin(yaw),
+      Math.cos(roll),
+      Math.sin(roll)*Math.cos(yaw)
+    )
 
-    cam.x/=camLen
-    cam.y/=camLen
-    cam.z/=camLen
+    // mounting correction
+    axis = new THREE.Vector3(axis.z,axis.y,-axis.x)
+    up   = new THREE.Vector3(up.x,up.z,-up.y)
 
-    const camRight = {
-      x: cam.y*0 - cam.z*1,
-      y: cam.z*0 - cam.x*0,
-      z: cam.x*1 - cam.y*0
-    }
+    axis.normalize()
+    up.normalize()
 
-    const camUp = {
-      x: camRight.y*cam.z - camRight.z*cam.y,
-      y: camRight.z*cam.x - camRight.x*cam.z,
-      z: camRight.x*cam.y - camRight.y*cam.x
-    }
+    // compute orthogonal right vector
+    const right = new THREE.Vector3().crossVectors(axis,up).normalize()
+    up = new THREE.Vector3().crossVectors(right,axis).normalize()
 
-    function project(p:{x:number,y:number,z:number}){
+    // build quaternion
+    const m = new THREE.Matrix4()
+    m.makeBasis(axis,up,right)
 
-      const x = p.x*camRight.x + p.y*camRight.y + p.z*camRight.z
-      const y = p.x*camUp.x + p.y*camUp.y + p.z*camUp.z
-      const z = p.x*cam.x + p.y*cam.y + p.z*cam.z + 6
+    const q = new THREE.Quaternion().setFromRotationMatrix(m)
 
-      return {
-        x: w/2 + (x/z)*scale,
-        y: h/2 - (y/z)*scale
-      }
+    payload.setRotationFromQuaternion(q)
 
-    }
+    forwardArrow.setDirection(axis)
+    upArrow.setDirection(up)
 
-    const axis = imuData.axis
-    const up = imuData.up
+  },[imuData])
 
-    const right = {
-      x: axis.y*up.z - axis.z*up.y,
-      y: axis.z*up.x - axis.x*up.z,
-      z: axis.x*up.y - axis.y*up.x
-    }
-
-    const L = 4
-    const W = 2
-    const H = 1
-
-    const corners = [
-      [-L/2,-H/2,-W/2],
-      [ L/2,-H/2,-W/2],
-      [ L/2, H/2,-W/2],
-      [-L/2, H/2,-W/2],
-      [-L/2,-H/2, W/2],
-      [ L/2,-H/2, W/2],
-      [ L/2, H/2, W/2],
-      [-L/2, H/2, W/2]
-    ]
-
-    const verts = corners.map(c => {
-
-      const p = {
-        x: axis.x*c[0] + up.x*c[1] + right.x*c[2],
-        y: axis.y*c[0] + up.y*c[1] + right.y*c[2],
-        z: axis.z*c[0] + up.z*c[1] + right.z*c[2]
-      }
-
-      return project(p)
-
-    })
-
-    const faces = [
-      [0,1,2,3],
-      [4,5,6,7],
-      [0,1,5,4],
-      [2,3,7,6],
-      [0,3,7,4],
-      [1,2,6,5]
-    ]
-
-    ctx.strokeStyle = "#dc2626"
-    ctx.fillStyle = "rgba(220,38,38,0.35)"
-    ctx.lineWidth = 2
-
-    faces.forEach(f => {
-
-      ctx.beginPath()
-      ctx.moveTo(verts[f[0]].x,verts[f[0]].y)
-      ctx.lineTo(verts[f[1]].x,verts[f[1]].y)
-      ctx.lineTo(verts[f[2]].x,verts[f[2]].y)
-      ctx.lineTo(verts[f[3]].x,verts[f[3]].y)
-      ctx.closePath()
-
-      ctx.fill()
-      ctx.stroke()
-
-    })
-
-    function drawArrow(v:{x:number,y:number,z:number},color:string){
-
-      const p = project(v)
-
-      ctx.strokeStyle = color
-      ctx.lineWidth = 3
-
-      ctx.beginPath()
-      ctx.moveTo(w/2,h/2)
-      ctx.lineTo(p.x,p.y)
-      ctx.stroke()
-
-    }
-
-    drawArrow({x: axis.x*3, y: axis.y*3, z: axis.z*3},"#22c55e")
-    drawArrow({x: up.x*3, y: up.y*3, z: up.z*3},"#06b6d4")
-
-    ctx.fillStyle = "#ffffff"
-    ctx.font = "16px monospace"
-    ctx.textAlign = "left"
-
-    ctx.fillText(`Yaw: ${imuData.yaw.toFixed(1)}°`,30,50)
-    ctx.fillText(`Pitch: ${imuData.pitch.toFixed(1)}°`,30,80)
-    ctx.fillText(`Roll: ${imuData.roll.toFixed(1)}°`,30,110)
-
-  }, [imuData])
+  // ======================
+  // UI
+  // ======================
 
   return (
+
     <main className="min-h-screen w-full bg-background flex flex-col">
 
       <header className="w-full border-b border-border/40 bg-background/95 backdrop-blur sticky top-0 z-50">
@@ -215,15 +217,19 @@ export default function Dashboard() {
             </div>
           </Link>
 
-          <div
-            className={`hidden sm:flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border ${
-              connected
-                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                : "border-border text-muted-foreground"
-            }`}
-          >
-            {connected ? <Wifi className="w-3 h-3"/> : <WifiOff className="w-3 h-3"/>}
+          <div className={`hidden sm:flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border ${
+            connected
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+              : "border-border text-muted-foreground"
+          }`}>
+
+            {connected
+              ? <Wifi className="w-3 h-3"/>
+              : <WifiOff className="w-3 h-3"/>
+            }
+
             {connected ? "IMU Connected" : "IMU Disconnected"}
+
           </div>
 
           <div className="flex items-center gap-3">
@@ -242,6 +248,7 @@ export default function Dashboard() {
       <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-8 flex flex-col gap-6">
 
         <div>
+
           <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">
             Live Telemetry
           </p>
@@ -249,6 +256,7 @@ export default function Dashboard() {
           <h1 className="text-3xl md:text-4xl font-black tracking-tight">
             IMU Orientation Viewer
           </h1>
+
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 flex-1">
@@ -259,13 +267,11 @@ export default function Dashboard() {
 
               <div className="absolute top-0 left-0 right-0 h-9 bg-card border-b flex items-center px-4 gap-2">
 
-                <Activity
-                  className={`w-3.5 h-3.5 ${
-                    connected
-                      ? "text-emerald-500 animate-pulse"
-                      : "text-red-500"
-                  }`}
-                />
+                <Activity className={`w-3.5 h-3.5 ${
+                  connected
+                    ? "text-emerald-500 animate-pulse"
+                    : "text-red-500"
+                }`}/>
 
                 <span className="text-xs text-muted-foreground">
                   localhost:5000
@@ -273,11 +279,9 @@ export default function Dashboard() {
 
               </div>
 
-              <canvas
-                ref={canvasRef}
-                width={1000}
-                height={650}
-                className="absolute inset-0 top-9 w-full h-[calc(100%-2.25rem)] bg-[#141418]"
+              <div
+                ref={mountRef}
+                className="absolute inset-0 top-9"
               />
 
             </div>
@@ -289,5 +293,6 @@ export default function Dashboard() {
       </div>
 
     </main>
+
   )
 }
