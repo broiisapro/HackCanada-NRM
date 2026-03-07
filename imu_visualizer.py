@@ -1,9 +1,12 @@
-from vpython import *
+from vpython import canvas, box, arrow, label, vector, color  # type: ignore[import]
 import serial
 import math
-import time
+import sys
 
-PORT="/dev/cu.ESP32_IMU"
+if sys.platform == "darwin":
+    PORT = "/dev/cu.ESP32_IMU"   # macOS
+else:
+    PORT = "COM3"                 # Windows — change if your port is different
 BAUD=115200
 
 ser=serial.Serial(PORT,BAUD,timeout=1)
