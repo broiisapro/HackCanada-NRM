@@ -1,11 +1,6 @@
 from vpython import canvas, box, arrow, label, vector, color  # type: ignore[import]
 import serial
 import math
-<<<<<<< HEAD
-
-PORT = "/dev/cu.ESP32_IMU"
-BAUD = 115200
-=======
 import sys
 
 if sys.platform == "darwin":
@@ -13,7 +8,6 @@ if sys.platform == "darwin":
 else:
     PORT = "COM3"                 # Windows — change if your port is different
 BAUD=115200
->>>>>>> fae8a7e9a49f9837e9e83ac4b4fd20a7f668a9dd
 
 print("Connecting to ESP32...")
 
