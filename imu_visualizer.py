@@ -1,22 +1,71 @@
 from vpython import *
 import serial
 import math
+import time
 
-ser = serial.Serial("/dev/cu.ESP32_IMU",115200)
+PORT="/dev/cu.ESP32_IMU"
+BAUD=115200
 
-scene = canvas(title="ESP32 IMU Orientation", width=800, height=600)
+ser=serial.Serial(PORT,BAUD,timeout=1)
 
-board = box(length=4,width=2,height=0.3,color=color.red)
+scene=canvas(title="Payload IMU Telemetry",width=1000,height=650,
+background=vector(0.08,0.08,0.1))
+
+scene.forward=vector(-1,-0.3,-1)
+
+payload=box(length=4,width=2,height=1,color=color.red)
+
+forward_arrow=arrow(pos=vector(0,0,0),axis=vector(3,0,0),
+color=color.green,shaftwidth=0.15)
+
+up_arrow=arrow(pos=vector(0,0,0),axis=vector(0,3,0),
+color=color.cyan,shaftwidth=0.15)
+
+yaw_text=label(pos=vector(-6,5,0),text="Yaw: 0°",box=False,height=20)
+pitch_text=label(pos=vector(-6,4,0),text="Pitch: 0°",box=False,height=20)
+roll_text=label(pos=vector(-6,3,0),text="Roll: 0°",box=False,height=20)
+
+print("Connected")
 
 while True:
 
-    line = ser.readline().decode().strip()
-
     try:
-        pitch, roll = map(float,line.split(","))
 
-        board.axis = vector(math.cos(math.radians(pitch)),0,math.sin(math.radians(pitch)))
-        board.up = vector(0,math.cos(math.radians(roll)),math.sin(math.radians(roll)))
+        line=ser.readline().decode().strip()
+
+        if not line:
+            continue
+
+        yaw,pitch,roll=map(float,line.split(","))
+
+        yaw_text.text=f"Yaw: {yaw:.1f}°"
+        pitch_text.text=f"Pitch: {pitch:.1f}°"
+        roll_text.text=f"Roll: {roll:.1f}°"
+
+        yaw=math.radians(yaw)
+        pitch=math.radians(pitch)
+        roll=math.radians(roll)
+
+        axis=vector(
+            math.cos(pitch)*math.cos(yaw),
+            math.sin(pitch),
+            math.cos(pitch)*math.sin(yaw)
+        )
+
+        up=vector(
+            -math.sin(roll)*math.sin(yaw),
+            math.cos(roll),
+            math.sin(roll)*math.cos(yaw)
+        )
+
+        axis=vector(axis.z,axis.y,-axis.x)
+        up=vector(up.x,up.z,-up.y)
+
+        payload.axis=axis
+        payload.up=up
+
+        forward_arrow.axis=axis*3
+        up_arrow.axis=up*3
 
     except:
         pass
