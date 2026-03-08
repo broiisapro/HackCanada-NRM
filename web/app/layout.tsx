@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { NavigationLoader } from "@/components/navigation-loader";
 import "./globals.css";
 
 const display = Syne({
@@ -40,6 +41,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <NavigationLoader />
           {children}
         </ThemeProvider>
       </body>

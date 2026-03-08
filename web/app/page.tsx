@@ -1,14 +1,13 @@
 import { SparklesCore } from "@/components/ui/sparkles";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
-import { TextGradientScroll } from "@/components/ui/text-gradient-scroll";
-import { GlowingEffect } from "@/components/ui/glowing-effect";
 import AnimatedGradientBackground from "@/components/ui/animated-gradient-background";
 import { ThemeToggle } from "@/components/theme-toggle";
-import Link from "next/link";
-import { Flame } from "lucide-react";
+import { HeroSection } from "@/components/landing/hero-section";
+import { HowItWorks } from "@/components/landing/how-it-works";
+import { StatsBar } from "@/components/landing/stats-bar";
+import { StorySection } from "@/components/landing/story-section";
+import { Flame, Users, Cpu, Heart } from "lucide-react";
 
-export default async function Home() {
-  await new Promise((resolve) => setTimeout(resolve, 800));
+export default function Home() {
   return (
     <main className="min-h-screen w-full relative bg-background flex flex-col items-center overflow-x-hidden">
       {/* Background Particles & Gradient */}
@@ -38,57 +37,48 @@ export default async function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 flex flex-col items-center justify-center min-h-[80vh] w-full px-4 text-center">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-foreground mb-6 drop-shadow-sm text-balance leading-tight">
-          Welcome to Pyros
-        </h1>
-        <p className="text-muted-foreground text-lg md:text-2xl max-w-2xl mb-12">
-          Advanced forest fire detection through spectral imaging and heat mapping.
-        </p>
+      <HeroSection />
 
-        <Link href="/upload" className="mt-8">
-          <ShimmerButton className="text-xl shadow-2xl" background="rgba(159, 18, 57, 1)">
-            <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white lg:text-lg z-10">
-              Go to Dashboard
-            </span>
-          </ShimmerButton>
-        </Link>
+      {/* How It Works */}
+      <HowItWorks />
+
+      {/* Stats */}
+      <StatsBar />
+
+      {/* Story Sections — varied layouts */}
+      <section className="relative z-10 w-full max-w-5xl mx-auto px-6 py-16 flex flex-col gap-24 md:gap-32">
+        <StorySection
+          variant="default"
+          title="Who We Are"
+          text="We are a team of student innovators driven by a passion to protect our environment. With backgrounds in AI, hardware, and software engineering, we built Pyros to tackle one of the planet's most critical challenges: preventing catastrophic forest fires."
+          icon={<Users className="w-8 h-8" />}
+        />
+        <StorySection
+          variant="split"
+          title="What The Project Is"
+          text="Pyros utilizes spectral lens technology combined with TensorFlow machine learning models. We capture imagery to classify flammable gas spectra. This data is processed to generate a predictive heat-map worldview, identifying high-risk areas for forest fire outbreaks before they happen."
+          icon={<Cpu className="w-8 h-8" />}
+        />
+        <StorySection
+          variant="quote"
+          title="Why We Built It"
+          text="Climate change is significantly increasing the frequency and intensity of wildfires globally. Early detection is our best defense. We built Pyros because we believe advanced autonomous technology can provide the crucial early warnings needed to save lives, protect wildlife, and preserve our forests."
+          icon={<Heart className="w-6 h-6" />}
+        />
       </section>
 
-      {/* Content Sections — glowing borders + gradient text */}
-      <section className="relative z-10 w-full max-w-5xl mx-auto px-6 py-32 flex flex-col gap-32 md:gap-[40vh]">
-        <div className="relative min-h-[30vh] flex flex-col justify-center rounded-2xl border border-border/50 bg-background/50 p-8 md:p-12 backdrop-blur-sm">
-          <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} borderWidth={2} />
-          <h2 className="relative z-10 text-primary text-2xl font-bold mb-4 uppercase tracking-widest">Who We Are</h2>
-          <div className="relative z-10 text-3xl md:text-5xl font-medium leading-tight text-foreground">
-            <TextGradientScroll
-              text="We are a team of student innovators driven by a passion to protect our environment. With backgrounds in AI, hardware, and software engineering, we built Pyros to tackle one of the planet's most critical challenges: preventing catastrophic forest fires."
-            />
-          </div>
-        </div>
-
-        <div className="relative min-h-[30vh] flex flex-col justify-center rounded-2xl border border-border/50 bg-background/50 p-8 md:p-12 backdrop-blur-sm">
-          <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} borderWidth={2} />
-          <h2 className="relative z-10 text-primary text-2xl font-bold mb-4 uppercase tracking-widest">What The Project Is</h2>
-          <div className="relative z-10 text-3xl md:text-5xl font-medium leading-tight text-foreground">
-            <TextGradientScroll
-              text="Pyros utilizes spectral lens technology combined with TensorFlow machine learning models. We capture imagery to classify flammable gas spectra. This data is processed to generate a predictive heat-map worldview, identifying high-risk areas for forest fire outbreaks before they happen."
-            />
-          </div>
-        </div>
-
-        <div className="relative min-h-[30vh] flex flex-col justify-center rounded-2xl border border-border/50 bg-background/50 p-8 md:p-12 backdrop-blur-sm">
-          <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} borderWidth={2} />
-          <h2 className="relative z-10 text-primary text-2xl font-bold mb-4 uppercase tracking-widest">Why We Built It</h2>
-          <div className="relative z-10 text-3xl md:text-5xl font-medium leading-tight text-foreground">
-            <TextGradientScroll
-              text="Climate change is significantly increasing the frequency and intensity of wildfires globally. Early detection is our best defense. We built Pyros because we believe advanced autonomous technology can provide the crucial early warnings needed to save lives, protect wildlife, and preserve our forests."
-            />
-          </div>
-        </div>
+      {/* Final CTA */}
+      <section className="relative z-10 w-full max-w-5xl mx-auto px-6 py-24 flex flex-col items-center">
+        <a
+          href="/upload"
+          className="inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-8 py-4 text-lg font-semibold text-primary hover:bg-primary/20 hover:border-primary/70 transition-colors press-active"
+        >
+          <Flame className="w-5 h-5" />
+          Go to Dashboard
+        </a>
       </section>
 
-      <div className="h-[80vh] w-full relative z-10" />
+      <div className="h-[40vh] w-full relative z-10" />
     </main>
   );
 }
