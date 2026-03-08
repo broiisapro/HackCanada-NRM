@@ -11,6 +11,7 @@ import {
   IconLog,
   IconInfo,
   IconRender,
+  IconHeatmap,
 } from '../components/dashboard-ui';
 
 const NAV_ITEMS = [
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
   { id: 'analytics', path: '/analytics', label: 'Analytics', icon: IconChart },
   { id: 'detections', path: '/detections', label: 'Detections', icon: IconFlask },
   { id: 'logs', path: '/logs', label: 'Event Log', icon: IconLog },
+  { id: 'heatmap', path: '/heatmap', label: 'Heatmap', icon: IconHeatmap },
   { id: 'render', path: '/render', label: 'Render', icon: IconRender },
   { id: 'about', path: '/about', label: 'About', icon: IconInfo },
 ] as const;
@@ -57,7 +59,7 @@ function SidebarContent() {
           <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider [color:var(--text-muted)]">Navigation</p>
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.path;
-            const isLocked = item.id !== 'upload' && item.id !== 'render' && !hasAnalyzed;
+            const isLocked = item.id !== 'upload' && item.id !== 'render' && item.id !== 'heatmap' && !hasAnalyzed;
             const Icon = item.icon;
             return (
               <Link
