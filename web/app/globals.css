@@ -57,6 +57,46 @@
   --secondary-foreground: #fafafa;
 }
 
+/* Light theme (next-themes adds .light to html) */
+.light {
+  --bg-base: #fafafa;
+  --bg-base-mesh: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(127, 29, 29, 0.06), transparent 50%),
+    radial-gradient(ellipse 80% 60% at 100% 50%, rgba(92, 26, 26, 0.04), transparent 40%);
+  --bg-elevated: #f5f5f5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --border-subtle: #e7e5e4;
+  --border-default: #d6d3d1;
+  --maroon-950: #450a0a;
+  --maroon-900: #7f1d1d;
+  --maroon-800: #991b1b;
+  --maroon-600: #b91c1c;
+  --maroon-500: #dc2626;
+  --maroon-400: #e11d48;
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-muted: #78716c;
+  --card: #ffffff;
+  --ring: #9f1239;
+  --input: #e7e5e4;
+  --muted: #f5f5f5;
+  --accent: #fecdd3;
+  --border: #d6d3d1;
+  --primary: #b91c1c;
+  --secondary: #f5f5f5;
+  --background: #fafafa;
+  --foreground: #1c1917;
+  --muted-foreground: #78716c;
+  --primary-foreground: #ffffff;
+  --accent-foreground: #450a0a;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --secondary-foreground: #1c1917;
+}
+
 .dark {
   --card: #141212;
   --ring: #e11d48;
