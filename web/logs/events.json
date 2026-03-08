@@ -1668,5 +1668,316 @@
       "lat": 53.55,
       "lon": -113.49
     }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "The spectrum displays 4 distinct emission lines.",
+      "The lines observed are: one violet line on the far left, one blue-violet line slightly to its right, one cyan line further to the right, and one red line on the far right of the visible spectrum.",
+      "The positions and colors of these lines correspond to the characteristic Balmer series of Hydrogen: approximately 410 nm (violet), 434 nm (blue), 486 nm (cyan), and 656 nm (red). The spacing and relative intensities are consistent with the Hydrogen reference spectrum.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T12:45:04.769Z",
+    "reading_location": {
+      "x": 41.595593278463646,
+      "y": 55.13794581618656,
+      "label": "Edmonton, AB",
+      "lat": 53.55,
+      "lon": -113.49
+    }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "The spectrum displays 4 distinct emission lines.",
+      "The lines observed are: one violet line on the far left, one blue-violet line slightly to its right, one cyan line further to the right, and one red line on the far right of the visible spectrum.",
+      "The positions and colors of these lines correspond to the characteristic Balmer series of Hydrogen: approximately 410 nm (violet), 434 nm (blue), 486 nm (cyan), and 656 nm (red). The spacing and relative intensities are consistent with the Hydrogen reference spectrum.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T12:45:04.769Z",
+    "reading_location": {
+      "x": 41.595593278463646,
+      "y": 55.13794581618656,
+      "label": "Edmonton, AB",
+      "lat": 53.55,
+      "lon": -113.49
+    }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "The spectrum displays 4 distinct emission lines.",
+      "The lines observed are: one violet line on the far left, one blue-violet line slightly to its right, one cyan line further to the right, and one red line on the far right of the visible spectrum.",
+      "The positions and colors of these lines correspond to the characteristic Balmer series of Hydrogen: approximately 410 nm (violet), 434 nm (blue), 486 nm (cyan), and 656 nm (red). The spacing and relative intensities are consistent with the Hydrogen reference spectrum.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T12:45:04.769Z",
+    "reading_location": {
+      "x": 41.595593278463646,
+      "y": 55.13794581618656,
+      "label": "Edmonton, AB",
+      "lat": 53.55,
+      "lon": -113.49
+    }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "The spectrum displays 4 distinct emission lines.",
+      "The lines observed are: one violet line on the far left, one blue-violet line slightly to its right, one cyan line further to the right, and one red line on the far right of the visible spectrum.",
+      "The positions and colors of these lines correspond to the characteristic Balmer series of Hydrogen: approximately 410 nm (violet), 434 nm (blue), 486 nm (cyan), and 656 nm (red). The spacing and relative intensities are consistent with the Hydrogen reference spectrum.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T12:45:04.769Z",
+    "reading_location": {
+      "x": 41.595593278463646,
+      "y": 55.13794581618656,
+      "label": "Edmonton, AB",
+      "lat": 53.55,
+      "lon": -113.49
+    }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.99,
+    "timestamp": "2026-03-08T13:42:48.781Z",
+    "risk_level": "high",
+    "indicators": [
+      "Observed 4 distinct emission lines. From left (shortest wavelength) to right (longest wavelength), these are: a prominent violet line (approximately 410 nm), a blue line (approximately 434 nm), a cyan line (approximately 486 nm), and a distinct red line (approximately 656 nm). The lines exhibit a well-spaced pattern characteristic of the Balmer series.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.99,
+    "risk_level": "high",
+    "indicators": [
+      "Observed 4 distinct emission lines. From left (shortest wavelength) to right (longest wavelength), these are: a prominent violet line (approximately 410 nm), a blue line (approximately 434 nm), a cyan line (approximately 486 nm), and a distinct red line (approximately 656 nm). The lines exhibit a well-spaced pattern characteristic of the Balmer series.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T13:42:48.781Z",
+    "reading_location": {
+      "x": 82.14531893004116,
+      "y": 62.510973936899866,
+      "label": "Montreal, QC",
+      "lat": 45.5,
+      "lon": -73.57
+    }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 1,
+    "timestamp": "2026-03-08T13:46:15.037Z",
+    "risk_level": "high",
+    "indicators": [
+      "The spectrum displays 4 distinct emission lines.",
+      "From left to right (shorter to longer wavelength), the lines are: one violet, one blue-violet, one cyan, and one red.",
+      "These lines are well-spaced across the visible spectrum, consistent with the Balmer series pattern.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 1,
+    "risk_level": "high",
+    "indicators": [
+      "The spectrum displays 4 distinct emission lines.",
+      "From left to right (shorter to longer wavelength), the lines are: one violet, one blue-violet, one cyan, and one red.",
+      "These lines are well-spaced across the visible spectrum, consistent with the Balmer series pattern.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T13:46:15.037Z",
+    "reading_location": {
+      "x": 39.46484910836763,
+      "y": 58.007201646090536,
+      "label": "Edmonton, AB",
+      "lat": 53.55,
+      "lon": -113.49
+    }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "timestamp": "2026-03-08T13:48:41.103Z",
+    "risk_level": "high",
+    "indicators": [
+      "The spectrum displays 4 distinct emission lines. From left to right (shortest to longest wavelength): a violet line, followed by a dark blue line, then a cyan line, and finally a red line on the far right. The lines are not evenly spaced, with two lines closer on the left (violet and blue), a moderate gap, then the cyan line, followed by a larger gap to the red line.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "The spectrum displays 4 distinct emission lines. From left to right (shortest to longest wavelength): a violet line, followed by a dark blue line, then a cyan line, and finally a red line on the far right. The lines are not evenly spaced, with two lines closer on the left (violet and blue), a moderate gap, then the cyan line, followed by a larger gap to the red line.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T13:48:41.103Z",
+    "reading_location": {
+      "x": 21.529320987654323,
+      "y": 66.0522976680384,
+      "label": "Vancouver, BC",
+      "lat": 49.28,
+      "lon": -123.12
+    }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 1,
+    "timestamp": "2026-03-08T13:55:31.596Z",
+    "risk_level": "high",
+    "indicators": [
+      "4 distinct emission lines are observed.",
+      "The leftmost line is violet.",
+      "The second line from the left is blue, located close to the violet line.",
+      "The third line from the left is cyan, situated to the right of the blue line with a moderate gap.",
+      "The rightmost line is red, positioned with a significant gap from the cyan line.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 1,
+    "risk_level": "high",
+    "indicators": [
+      "4 distinct emission lines are observed.",
+      "The leftmost line is violet.",
+      "The second line from the left is blue, located close to the violet line.",
+      "The third line from the left is cyan, situated to the right of the blue line with a moderate gap.",
+      "The rightmost line is red, positioned with a significant gap from the cyan line.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T13:55:31.596Z",
+    "reading_location": {
+      "x": 24.421039094650205,
+      "y": 68.94393004115226,
+      "label": "Vancouver, BC",
+      "lat": 49.28,
+      "lon": -123.12
+    }
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "timestamp": "2026-03-08T14:10:16.983Z",
+    "risk_level": "high",
+    "indicators": [
+      "Four distinct emission lines are present.",
+      "The colors of the lines are violet, blue, cyan, and red.",
+      "The violet and blue lines are closely spaced on the far left (shorter wavelengths) of the spectrum.",
+      "A cyan line is observed to the right of the violet and blue lines.",
+      "A distinct red line is observed on the far right (longer wavelength) of the spectrum, with significant spacing from the other lines.",
+      "This pattern of four lines with their specific colors and relative positions (violet, blue, cyan, red) corresponds precisely to the Balmer series of hydrogen.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "Four distinct emission lines are present.",
+      "The colors of the lines are violet, blue, cyan, and red.",
+      "The violet and blue lines are closely spaced on the far left (shorter wavelengths) of the spectrum.",
+      "A cyan line is observed to the right of the violet and blue lines.",
+      "A distinct red line is observed on the far right (longer wavelength) of the spectrum, with significant spacing from the other lines.",
+      "This pattern of four lines with their specific colors and relative positions (violet, blue, cyan, red) corresponds precisely to the Balmer series of hydrogen.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T14:10:16.983Z",
+    "reading_location": {
+      "x": 73.6857853223594,
+      "y": 56.24751371742113,
+      "label": "Toronto, ON",
+      "lat": 43.65,
+      "lon": -79.38
+    }
   }
 ]
