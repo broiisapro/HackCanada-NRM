@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /Users/mokshs/Documents/hackcanada
+cd /Users/nitya/Documents/Projects/HackCanada-NRM
 ./model/tf_env/bin/python imu_server.py

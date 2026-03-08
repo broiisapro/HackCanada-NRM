@@ -274,7 +274,7 @@ export default function Dashboard() {
                 }`}/>
 
                 <span className="text-xs text-muted-foreground">
-                  localhost:5000
+                  localhost:5001
                 </span>
 
               </div>

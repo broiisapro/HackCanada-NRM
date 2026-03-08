@@ -2,6 +2,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 const HISTORY_PATH = path.join(process.cwd(), 'output', 'history.json');
 
 export async function GET() {

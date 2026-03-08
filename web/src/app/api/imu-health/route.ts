@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const response = await fetch('http://localhost:5000/api/imu-health', {
+    const response = await fetch('http://localhost:5001/api/imu-health', {
       cache: 'no-store'
     });
     
