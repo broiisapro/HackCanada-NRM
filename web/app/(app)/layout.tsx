@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AppProvider, useAppContext } from '../context/app-context';
+import { ThemeToggle } from '@/components/theme-toggle';
 import {
   IconUpload,
   IconOverview,
@@ -21,7 +22,7 @@ const NAV_ITEMS = [
   { id: 'detections', path: '/detections', label: 'Detections', icon: IconFlask },
   { id: 'logs', path: '/logs', label: 'Event Log', icon: IconLog },
   { id: 'heatmap', path: '/heatmap', label: 'Heatmap', icon: IconHeatmap },
-  { id: 'render', path: '/render', label: 'Render', icon: IconRender },
+  { id: 'render', path: '/render/dashboard', label: 'Render', icon: IconRender },
   { id: 'about', path: '/about', label: 'About', icon: IconInfo },
 ] as const;
 
@@ -32,9 +33,9 @@ function SidebarContent() {
   return (
     <>
       <aside className="flex w-56 shrink-0 flex-col border-r [background:var(--bg-elevated)] [border-color:var(--border-default)]">
-        <div className="border-b px-5 py-5 [border-color:var(--border-default)]">
+        <div className="border-b px-5 py-5 flex items-center justify-between gap-2 [border-color:var(--border-default)]">
           <Link
-            href="/upload"
+            href="/"
             className="press-active flex items-center gap-2.5"
             aria-label="Pyros home"
           >
@@ -53,12 +54,13 @@ function SidebarContent() {
               <p className="text-[10px] [color:var(--text-muted)]">Fire Detection</p>
             </div>
           </Link>
+          <ThemeToggle />
         </div>
 
         <nav className="flex-1 px-2 py-3" aria-label="Main navigation">
           <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider [color:var(--text-muted)]">Navigation</p>
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.path;
+            const isActive = pathname === item.path || (item.id === 'render' && pathname.startsWith('/render/dashboard'));
             const isLocked = item.id !== 'upload' && item.id !== 'render' && item.id !== 'heatmap' && !hasAnalyzed;
             const Icon = item.icon;
             return (
