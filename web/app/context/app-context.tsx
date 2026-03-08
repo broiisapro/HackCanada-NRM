@@ -1,9 +1,19 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type { MonitorStatus } from '../../lib/monitor';
 
 // ── Types ──
+
+export interface CallLogEntry {
+  conversation_id: string;
+  started_at: string;
+  completed_at?: string;
+  status: 'done' | 'failed';
+  duration_seconds?: number;
+  transcript?: { role: string; message: string }[];
+  error?: string;
+}
 
 export interface HistoryEntry {
   fire_detected: boolean | null;
@@ -26,6 +36,18 @@ export interface AnalyzeImageResult {
   combustion_indicators: string[];
   timestamp: string;
   error?: string;
+  weather?: {
+    temp_c: number;
+    humidity_percent: number;
+    wind_speed_kmh: number;
+    wind_deg: number;
+    wind_direction: string;
+    dryness_index: number;
+    description?: string;
+    fetched_at: string;
+    location_label?: string;
+  };
+  reading_location?: { x: number; y: number; label: string; lat: number; lon: number };
 }
 
 export type ChartPoint = {
@@ -65,6 +87,7 @@ interface AppContextValue {
   callError: string | null;
   handleEmergencyCall: () => Promise<void>;
   resetCallStatus: () => void;
+  callLogs: CallLogEntry[];
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -84,6 +107,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [uploadResult, setUploadResult] = useState<AnalyzeImageResult | null>(null);
   const [callStatus, setCallStatus] = useState<'idle' | 'calling' | 'success' | 'error'>('idle');
   const [callError, setCallError] = useState<string | null>(null);
+  const [callLogs, setCallLogs] = useState<CallLogEntry[]>([]);
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const setUploadFile = useCallback((file: File | null) => {
     setUploadFileState(file);
@@ -93,12 +118,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const poll = async () => {
       try {
-        const [monRes, histRes] = await Promise.all([
+        const [monRes, histRes, callLogRes] = await Promise.all([
           fetch('/api/monitor'),
           fetch('/api/history'),
+          fetch('/api/call-log'),
         ]);
         setData(await monRes.json());
         setHistory(await histRes.json());
+        const logs = await callLogRes.json();
+        if (Array.isArray(logs)) setCallLogs([...logs].reverse());
       } catch {
         /* keep previous state */
       }
@@ -108,6 +136,60 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const interval = setInterval(poll, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  // Poll conversation until done/failed after a successful emergency call
+  useEffect(() => {
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+    const conversationId = typeof window !== 'undefined' ? sessionStorage.getItem('pyros_pending_conversation_id') : null;
+    const startedAt = typeof window !== 'undefined' ? sessionStorage.getItem('pyros_call_started_at') : null;
+    if (!conversationId || !startedAt) return;
+
+    const pollConversation = async () => {
+      try {
+        const res = await fetch(`/api/conversation?conversation_id=${encodeURIComponent(conversationId)}`);
+        const details = await res.json();
+        const status = details.status as string;
+        if (status !== 'done' && status !== 'failed') return;
+
+        sessionStorage.removeItem('pyros_pending_conversation_id');
+        sessionStorage.removeItem('pyros_call_started_at');
+        if (pollIntervalRef.current) {
+          clearInterval(pollIntervalRef.current);
+          pollIntervalRef.current = null;
+        }
+
+        const entry: CallLogEntry = {
+          conversation_id: conversationId,
+          started_at: startedAt,
+          completed_at: new Date().toISOString(),
+          status: status === 'done' ? 'done' : 'failed',
+          duration_seconds: typeof details.duration_seconds === 'number' ? details.duration_seconds : undefined,
+          transcript: Array.isArray(details.transcript) ? details.transcript : undefined,
+          error: typeof details.error === 'string' ? details.error : undefined,
+        };
+        await fetch('/api/call-log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entry),
+        });
+        setCallLogs((prev) => [entry, ...prev]);
+      } catch {
+        /* retry on next tick */
+      }
+    };
+
+    pollConversation();
+    pollIntervalRef.current = setInterval(pollConversation, 5000);
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
+      }
+    };
+  }, [callStatus]);
 
   const handleAnalyze = useCallback(async () => {
     if (!uploadFile) return;
@@ -159,7 +241,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }),
       });
       const json = await res.json();
-      if (json.success) {
+      if (json.success && json.conversation_id) {
+        const startedAt = new Date().toISOString();
+        try {
+          sessionStorage.setItem('pyros_pending_conversation_id', json.conversation_id);
+          sessionStorage.setItem('pyros_call_started_at', startedAt);
+        } catch {
+          /* ignore */
+        }
+        setCallStatus('success');
+      } else if (json.success) {
         setCallStatus('success');
       } else {
         setCallStatus('error');
@@ -213,6 +304,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     callError,
     handleEmergencyCall,
     resetCallStatus,
+    callLogs,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

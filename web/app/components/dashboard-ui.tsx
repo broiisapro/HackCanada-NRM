@@ -5,8 +5,9 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, AreaChart, Area, Legend,
 } from 'recharts';
+import { useState } from 'react';
 import type { MonitorStatus } from '../../lib/monitor';
-import type { AnalyzeImageResult, ChartPoint } from '../context/app-context';
+import type { AnalyzeImageResult, ChartPoint, CallLogEntry } from '../context/app-context';
 
 // ── Shared chart config ──
 
@@ -77,6 +78,13 @@ export function IconHeatmap() {
   return (
     <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 15l4-8 4 4 5-9 4 6 4-4v12H3z" />
+    </svg>
+  );
+}
+export function IconWeather() {
+  return (
+    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
     </svg>
   );
 }
@@ -281,7 +289,7 @@ export function UploadTab({
         {hasAnalyzed && (
           <Card className="stagger-6 border-[var(--maroon-800)]/50 bg-[var(--maroon-950)]/30">
             <p className="mb-3 text-sm [color:var(--text-secondary)]">
-              Explore overview, analytics, detections, and event logs in the sidebar.
+              Explore overview, analytics, and event logs in the sidebar.
             </p>
             <Link
               href="/overview"
@@ -394,7 +402,39 @@ export function UploadTab({
 
 // ── Overview Tab ──
 
-export function OverviewTab({ data, chartData, onCallEmergency }: { data: MonitorStatus | null; chartData: ChartPoint[]; onCallEmergency?: () => void }) {
+type WeatherForOverview = MonitorStatus['weather'];
+
+function OverviewWindArrow({ deg }: { deg: number }) {
+  const rad = ((deg - 90) * Math.PI) / 180;
+  const len = 24;
+  const x = 16 + Math.cos(rad) * len;
+  const y = 16 - Math.sin(rad) * len;
+  return (
+    <svg width="40" height="40" viewBox="0 0 40 40" className="inline-block shrink-0 [color:var(--text-secondary)]" aria-hidden>
+      <line x1="20" y1="20" x2={x} y2={y} stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <polygon
+        points={`${x},${y} ${x - 6 * Math.cos(rad) + 4 * Math.sin(rad)},${y + 6 * Math.sin(rad) + 4 * Math.cos(rad)} ${x - 6 * Math.cos(rad) - 4 * Math.sin(rad)},${y + 6 * Math.sin(rad) - 4 * Math.cos(rad)}`}
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function OverviewTab({
+  data,
+  chartData,
+  onCallEmergency,
+  weather = null,
+  weatherLoading = false,
+  weatherError = null,
+}: {
+  data: MonitorStatus | null;
+  chartData: ChartPoint[];
+  onCallEmergency?: () => void;
+  weather?: WeatherForOverview | null;
+  weatherLoading?: boolean;
+  weatherError?: string | null;
+}) {
   const noData = !data || data.status === 'no_data';
   const isDanger = data?.status === 'danger';
   const riskLevel = (data?.risk_level ?? '—').toUpperCase();
@@ -405,8 +445,72 @@ export function OverviewTab({ data, chartData, onCallEmergency }: { data: Monito
   };
   const riskColor = riskColors[riskLevel] ?? 'var(--text-muted)';
 
+  const displayWeather = weather ?? data?.weather;
+
   return (
     <div className="flex flex-col gap-5">
+      {/* Weather factors at top */}
+      <Card className="stagger-1">
+        <CardTitle>Weather (fire spread factors)</CardTitle>
+        {weatherLoading && !displayWeather && (
+          <p className="text-sm [color:var(--text-muted)]">Loading weather…</p>
+        )}
+        {weatherError && !displayWeather && (
+          <p className="text-sm [color:var(--maroon-400)]">{weatherError}</p>
+        )}
+        {displayWeather ? (
+          <>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <div>
+                <p className="mb-1 text-xs [color:var(--text-muted)]">Temperature</p>
+                <p className="text-xl font-bold tracking-tight [color:var(--text-primary)]" style={{ fontFamily: 'var(--font-display)' }}>
+                  {displayWeather.temp_c}°C
+                </p>
+                {displayWeather.description != null && (
+                  <p className="mt-0.5 text-xs [color:var(--text-muted)]">{displayWeather.description}</p>
+                )}
+              </div>
+              <div>
+                <p className="mb-1 text-xs [color:var(--text-muted)]">Humidity</p>
+                <p className="text-xl font-bold tracking-tight [color:var(--text-primary)]" style={{ fontFamily: 'var(--font-display)' }}>
+                  {displayWeather.humidity_percent}%
+                </p>
+              </div>
+              <div>
+                <p className="mb-2 text-xs [color:var(--text-muted)]">Wind</p>
+                <div className="flex items-center gap-3">
+                  <OverviewWindArrow deg={displayWeather.wind_deg} />
+                  <div>
+                    <p className="text-lg font-bold [color:var(--text-primary)]" style={{ fontFamily: 'var(--font-display)' }}>
+                      {displayWeather.wind_speed_kmh} km/h
+                    </p>
+                    <p className="text-xs [color:var(--text-muted)]">{displayWeather.wind_direction}</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p className="mb-1 text-xs [color:var(--text-muted)]">Dryness index</p>
+                <p className="text-xl font-bold tracking-tight [color:var(--text-primary)]" style={{ fontFamily: 'var(--font-display)' }}>
+                  {displayWeather.dryness_index}
+                </p>
+                <p className="mt-0.5 text-xs [color:var(--text-muted)]">
+                  {displayWeather.dryness_index >= 0.6 ? 'Elevated fire weather' : displayWeather.dryness_index >= 0.4 ? 'Moderate' : 'Lower'}
+                </p>
+              </div>
+            </div>
+            {(displayWeather.location_label ?? displayWeather.fetched_at) && (
+              <p className="mt-3 text-xs [color:var(--text-muted)]">
+                {displayWeather.location_label != null && `Location: ${displayWeather.location_label}`}
+                {displayWeather.location_label != null && displayWeather.fetched_at != null && ' · '}
+                {displayWeather.fetched_at != null && `Updated ${new Date(displayWeather.fetched_at).toLocaleString()}`}
+              </p>
+            )}
+          </>
+        ) : !weatherLoading && !weatherError && (
+          <p className="text-sm [color:var(--text-muted)]">Weather will appear after an analysis or when available.</p>
+        )}
+      </Card>
+
       <div
         className={`stagger-1 flex items-center gap-4 rounded-xl border p-5 transition-colors duration-200 ${
           isDanger ? 'border-[var(--maroon-800)] bg-[var(--maroon-950)]/60' : noData ? '[background:var(--bg-card)] [border-color:var(--border-default)]' : 'border-[var(--accent-success)]/30 bg-[var(--accent-success)]/10'
@@ -489,17 +593,27 @@ export function OverviewTab({ data, chartData, onCallEmergency }: { data: Monito
 
 // ── Analytics Tab ──
 
-export function AnalyticsTab({ chartData, gasBarData }: { chartData: ChartPoint[]; gasBarData: { gas: string; count: number }[] }) {
-  if (chartData.length === 0) {
-    return (
-      <Card>
-        <p className="py-12 text-center text-sm [color:var(--text-muted)]">No data yet. Charts will appear after the first analysis.</p>
-      </Card>
-    );
-  }
+export function AnalyticsTab({
+  chartData,
+  gasBarData,
+  data = null,
+  callLogs = [],
+}: {
+  chartData: ChartPoint[];
+  gasBarData: { gas: string; count: number }[];
+  data?: MonitorStatus | null;
+  callLogs?: CallLogEntry[];
+}) {
+  const hasChartData = chartData.length > 0;
 
   return (
     <div className="flex flex-col gap-5">
+      {!hasChartData ? (
+        <Card>
+          <p className="py-12 text-center text-sm [color:var(--text-muted)]">No data yet. Charts will appear after the first analysis.</p>
+        </Card>
+      ) : (
+        <>
       <Card className="stagger-1" interactive>
         <CardTitle>Confidence Over Time</CardTitle>
         <ResponsiveContainer width="100%" height={240}>
@@ -584,91 +698,135 @@ export function AnalyticsTab({ chartData, gasBarData }: { chartData: ChartPoint[
           </Card>
         )}
       </div>
-    </div>
-  );
-}
+        </>
+      )}
 
-// ── Detections Tab ──
-
-export function DetectionsTab({ data }: { data: MonitorStatus | null }) {
-  const gases = data?.gases_detected ?? [];
-  const indicators = data?.indicators ?? [];
-
-  return (
-    <div className="flex flex-col gap-5">
-      <Card className="stagger-1" interactive>
-        <CardTitle>Detected Gases</CardTitle>
-        {gases.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {gases.map((gas) => (
-              <span
-                key={gas}
-                className="rounded-lg border border-[var(--maroon-800)]/50 bg-[var(--maroon-950)]/40 px-4 py-2 text-sm font-medium text-[var(--maroon-400)] transition-colors duration-200 hover:border-[var(--maroon-600)]/50"
-              >
-                {gas}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm [color:var(--text-muted)]">No gases detected yet.</p>
-        )}
-      </Card>
-
-      <Card className="stagger-2" interactive>
-        <CardTitle>Spectral Observations</CardTitle>
-        {indicators.length > 0 ? (
-          <div className="flex flex-col gap-2">
-            {indicators.map((obs, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-lg bg-[var(--bg-elevated)] px-3 py-2 text-sm transition-colors duration-200 hover:bg-[var(--border-subtle)]">
-                <span className="mt-0.5 shrink-0 font-mono text-xs text-[var(--maroon-400)]">{String(i + 1).padStart(2, '0')}</span>
-                <span className="[color:var(--text-secondary)]">{obs}</span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm [color:var(--text-muted)]">No observations recorded yet.</p>
-        )}
-      </Card>
+      <LogsTab data={data} callLogs={callLogs} />
     </div>
   );
 }
 
 // ── Logs Tab ──
 
-export function LogsTab({ data }: { data: MonitorStatus | null }) {
+export function LogsTab({ data, callLogs = [] }: { data: MonitorStatus | null; callLogs?: CallLogEntry[] }) {
   const events = data?.recent_events ?? [];
   const riskColorMap: Record<string, string> = { low: 'var(--accent-success)', medium: 'var(--accent-warning)', high: '#f97316', critical: 'var(--accent-danger)' };
+  const [expandedCallId, setExpandedCallId] = useState<string | null>(null);
+
+  const handleToggleTranscript = (conversationId: string) => {
+    setExpandedCallId((prev) => (prev === conversationId ? null : conversationId));
+  };
+
+  const handleTranscriptKeyDown = (e: React.KeyboardEvent, conversationId: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleToggleTranscript(conversationId);
+    }
+  };
 
   return (
-    <Card className="stagger-1">
-      <CardTitle>Recent Events</CardTitle>
-      {events.length > 0 ? (
-        <div className="flex flex-col">
-          <div className="mb-1 grid grid-cols-[100px_70px_80px_80px_1fr] gap-3 border-b pb-2 text-xs font-medium [border-color:var(--border-default)] [color:var(--text-muted)]">
-            <span>Time</span>
-            <span>Status</span>
-            <span>Confidence</span>
-            <span>Risk</span>
-            <span>Gases</span>
-          </div>
-          {[...events].reverse().map((ev, i) => (
-            <div key={i} className="grid grid-cols-[100px_70px_80px_80px_1fr] items-center gap-3 border-b py-2.5 text-sm [border-color:var(--border-subtle)]">
-              <span className="font-mono text-xs [color:var(--text-muted)]">{new Date(ev.timestamp).toLocaleTimeString()}</span>
-              <span className={`text-xs font-semibold ${ev.fire_detected ? 'text-[var(--maroon-400)]' : 'text-[var(--accent-success)]'}`}>
-                {ev.fire_detected ? 'Alert' : 'Clear'}
-              </span>
-              <span className="font-mono text-xs [color:var(--text-secondary)]">{Math.round((ev.confidence ?? 0) * 100)}%</span>
-              <span className="text-xs" style={{ color: ev.risk_level ? riskColorMap[ev.risk_level.toLowerCase()] ?? 'var(--text-muted)' : 'var(--text-muted)' }}>
-                {ev.risk_level ?? '—'}
-              </span>
-              <span className="text-xs [color:var(--text-secondary)]">{ev.gases_detected?.join(', ') || '—'}</span>
+    <div className="flex flex-col gap-6">
+      <Card className="stagger-1">
+        <CardTitle>Recent Events</CardTitle>
+        {events.length > 0 ? (
+          <div className="flex flex-col">
+            <div className="mb-1 grid grid-cols-[100px_70px_80px_80px_1fr] gap-3 border-b pb-2 text-xs font-medium [border-color:var(--border-default)] [color:var(--text-muted)]">
+              <span>Time</span>
+              <span>Status</span>
+              <span>Confidence</span>
+              <span>Risk</span>
+              <span>Gases</span>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p className="py-12 text-center text-sm [color:var(--text-muted)]">No events recorded yet.</p>
-      )}
-    </Card>
+            {[...events].reverse().map((ev, i) => (
+              <div key={i} className="grid grid-cols-[100px_70px_80px_80px_1fr] items-center gap-3 border-b py-2.5 text-sm [border-color:var(--border-subtle)]">
+                <span className="font-mono text-xs [color:var(--text-muted)]">{new Date(ev.timestamp).toLocaleTimeString()}</span>
+                <span className={`text-xs font-semibold ${ev.fire_detected ? 'text-[var(--maroon-400)]' : 'text-[var(--accent-success)]'}`}>
+                  {ev.fire_detected ? 'Alert' : 'Clear'}
+                </span>
+                <span className="font-mono text-xs [color:var(--text-secondary)]">{Math.round((ev.confidence ?? 0) * 100)}%</span>
+                <span className="text-xs" style={{ color: ev.risk_level ? riskColorMap[ev.risk_level.toLowerCase()] ?? 'var(--text-muted)' : 'var(--text-muted)' }}>
+                  {ev.risk_level ?? '—'}
+                </span>
+                <span className="text-xs [color:var(--text-secondary)]">{ev.gases_detected?.join(', ') || '—'}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="py-12 text-center text-sm [color:var(--text-muted)]">No events recorded yet.</p>
+        )}
+      </Card>
+
+      <Card className="stagger-2">
+        <CardTitle>Emergency Call Log</CardTitle>
+        {callLogs.length > 0 ? (
+          <div className="flex flex-col">
+            <div className="mb-1 grid grid-cols-[100px_70px_80px_1fr_100px] gap-3 border-b pb-2 text-xs font-medium [border-color:var(--border-default)] [color:var(--text-muted)]">
+              <span>Time</span>
+              <span>Duration</span>
+              <span>Status</span>
+              <span>Transcript</span>
+              <span />
+            </div>
+            {callLogs.map((log) => {
+              const isExpanded = expandedCallId === log.conversation_id;
+              const durationStr = log.duration_seconds != null ? `${Math.round(log.duration_seconds)} s` : '—';
+              const hasTranscript = Array.isArray(log.transcript) && log.transcript.length > 0;
+              return (
+                <div key={log.conversation_id} className="border-b [border-color:var(--border-subtle)]">
+                  <div className="grid grid-cols-[100px_70px_80px_1fr_100px] items-center gap-3 py-2.5 text-sm">
+                    <span className="font-mono text-xs [color:var(--text-muted)]">
+                      {new Date(log.started_at).toLocaleTimeString()}
+                    </span>
+                    <span className="font-mono text-xs [color:var(--text-secondary)]">{durationStr}</span>
+                    <span
+                      className={`text-xs font-semibold ${log.status === 'done' ? 'text-[var(--accent-success)]' : 'text-[var(--accent-danger)]'}`}
+                    >
+                      {log.status === 'done' ? 'Done' : 'Failed'}
+                    </span>
+                    <span className="truncate text-xs [color:var(--text-secondary)]">
+                      {hasTranscript ? `${log.transcript!.length} message(s)` : log.error ?? '—'}
+                    </span>
+                    <div>
+                      {hasTranscript ? (
+                        <button
+                          type="button"
+                          onClick={() => handleToggleTranscript(log.conversation_id)}
+                          onKeyDown={(e) => handleTranscriptKeyDown(e, log.conversation_id)}
+                          className="rounded border px-2 py-1 text-xs font-medium [border-color:var(--border-default)] [color:var(--text-secondary)] hover:[border-color:var(--maroon-800)] hover:[color:var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--maroon-500)]"
+                          aria-expanded={isExpanded}
+                          aria-label={isExpanded ? 'Hide transcript' : 'View transcript'}
+                          tabIndex={0}
+                        >
+                          {isExpanded ? 'Hide' : 'View'}
+                        </button>
+                      ) : (
+                        <span className="text-xs [color:var(--text-muted)]">—</span>
+                      )}
+                    </div>
+                  </div>
+                  {isExpanded && hasTranscript && (
+                    <div className="border-t bg-[var(--bg-elevated)] px-3 py-3 [border-color:var(--border-subtle)]">
+                      <div className="flex flex-col gap-2">
+                        {log.transcript!.map((line, idx) => (
+                          <div key={idx} className="flex gap-2 text-sm">
+                            <span className="shrink-0 font-semibold capitalize [color:var(--text-muted)]" style={{ minWidth: 48 }}>
+                              {line.role}:
+                            </span>
+                            <span className="[color:var(--text-secondary)]">{line.message}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="py-12 text-center text-sm [color:var(--text-muted)]">No emergency calls recorded yet.</p>
+        )}
+      </Card>
+    </div>
   );
 }
 

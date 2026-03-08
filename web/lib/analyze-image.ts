@@ -106,6 +106,23 @@ function assessFireRisk(elements: string[]): {
   };
 }
 
+export interface ReadingLocationResult {
+  x: number;
+  y: number;
+  label: string;
+  lat: number;
+  lon: number;
+}
+
+/** Minimal weather context for risk adjustment (avoids circular dep with weather.ts). */
+export interface WeatherContextForRisk {
+  temp_c: number;
+  humidity_percent: number;
+  wind_speed_kmh: number;
+  wind_direction: string;
+  dryness_index: number;
+}
+
 export interface AnalyzeImageResult {
   fire_detected: boolean;
   gases_detected: string[];
@@ -116,6 +133,48 @@ export interface AnalyzeImageResult {
   combustion_indicators: string[];
   timestamp: string;
   error?: string;
+  weather?: WeatherContextForRisk & { description?: string; fetched_at: string; location_label?: string };
+  reading_location?: ReadingLocationResult;
+}
+
+/**
+ * Elevate risk when weather favors fire spread: high wind + low humidity + flammable gases.
+ * e.g. Hydrogen + 40 km/h winds + 12% humidity => critical.
+ */
+export function applyWeatherRisk(
+  result: AnalyzeImageResult,
+  weather: WeatherContextForRisk
+): { risk_level: string; fire_detected: boolean; indicators: string[] } {
+  const baseLevel = result.risk_level;
+  const indicators = [...(result.indicators ?? [])];
+  const hasFlammable = (result.flammable_gases?.length ?? 0) > 0;
+  const highWind = weather.wind_speed_kmh >= 30;
+  const lowHumidity = weather.humidity_percent < 25;
+  const dry = weather.dryness_index >= 0.5;
+
+  if (!hasFlammable) {
+    return { risk_level: baseLevel, fire_detected: result.fire_detected ?? false, indicators };
+  }
+
+  let risk_level = baseLevel;
+  if (baseLevel === 'high' && (highWind || lowHumidity) && dry) {
+    risk_level = 'critical';
+    indicators.push(
+      `Weather elevates risk: ${weather.wind_speed_kmh} km/h ${weather.wind_direction} wind, ${weather.humidity_percent}% humidity, dry conditions.`
+    );
+  } else if (baseLevel === 'medium' && highWind && lowHumidity) {
+    risk_level = 'high';
+    indicators.push(
+      `Wind and low humidity: ${weather.wind_speed_kmh} km/h ${weather.wind_direction}, ${weather.humidity_percent}% humidity.`
+    );
+  } else if (highWind || lowHumidity) {
+    indicators.push(
+      `Weather context: ${weather.wind_speed_kmh} km/h ${weather.wind_direction}, ${weather.humidity_percent}% humidity.`
+    );
+  }
+
+  const fire_detected = risk_level === 'high' || risk_level === 'critical';
+  return { risk_level, fire_detected, indicators };
 }
 
 const exemplarsDir = () => path.join(process.cwd(), 'public', 'exemplars');

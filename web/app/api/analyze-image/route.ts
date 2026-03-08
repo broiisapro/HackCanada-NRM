@@ -4,7 +4,9 @@ export const dynamic = 'force-dynamic';
 
 import fs from 'fs/promises';
 import path from 'path';
-import { analyzeImageBuffer, AnalyzeImageResult } from '../../../lib/analyze-image';
+import { analyzeImageBuffer, applyWeatherRisk, AnalyzeImageResult } from '../../../lib/analyze-image';
+import { pickReadingLocation } from '../../../lib/reading-locations';
+import { getWeatherForCoordinates } from '../../../lib/weather';
 import { appendEvent } from '../../../lib/logger';
 
 const RESULT_PATH = path.join(process.cwd(), 'output', 'result.json');
@@ -53,6 +55,48 @@ export async function POST(req: NextRequest) {
 
   if (result.error) {
     return NextResponse.json(result, { status: 200 });
+  }
+
+  const timestampMs = new Date(result.timestamp).getTime();
+  const readingLocation = pickReadingLocation(timestampMs);
+  const weather = await getWeatherForCoordinates(
+    readingLocation.lat,
+    readingLocation.lon,
+    readingLocation.label
+  );
+
+  if (weather) {
+    const adjusted = applyWeatherRisk(result, weather);
+    result = {
+      ...result,
+      risk_level: adjusted.risk_level,
+      fire_detected: adjusted.fire_detected,
+      indicators: adjusted.indicators,
+      weather: {
+        ...weather,
+        description: weather.description,
+        fetched_at: weather.fetched_at,
+        location_label: weather.location_label,
+      },
+      reading_location: {
+        x: readingLocation.x,
+        y: readingLocation.y,
+        label: readingLocation.label,
+        lat: readingLocation.lat,
+        lon: readingLocation.lon,
+      },
+    };
+  } else {
+    result = {
+      ...result,
+      reading_location: {
+        x: readingLocation.x,
+        y: readingLocation.y,
+        label: readingLocation.label,
+        lat: readingLocation.lat,
+        lon: readingLocation.lon,
+      },
+    };
   }
 
   const event = {

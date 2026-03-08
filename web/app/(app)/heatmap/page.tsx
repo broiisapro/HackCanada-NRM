@@ -3,9 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useAppContext } from '../../context/app-context';
 import { AppLayoutHeader } from '../../components/app-layout-header';
-
-// (Unused; kept so stale cache that referenced CANADA_PATH no longer throws.)
-const CANADA_PATH = '';
+import { pickReadingLocation } from '../../../lib/reading-locations';
 
 // Base hot spots: % position (0–100), radius, intensity, label. Matches canada-blank.svg.
 const BASE_HOT_SPOTS: { cx: number; cy: number; r: number; intensity: number; label: string }[] = [
@@ -17,44 +15,22 @@ const BASE_HOT_SPOTS: { cx: number; cy: number; r: number; intensity: number; la
 
 // More locations, spread weights so it feels random but plausible (forestry, oil, urban, coastal).
 // Jitter: we add ±jitterRange % to x/y so the pin isn’t always the same pixel.
-const READING_LOCATIONS: { x: number; y: number; label: string; weight: number }[] = [
-  { x: 22, y: 68, label: 'Vancouver, BC', weight: 18 },
-  { x: 18, y: 72, label: 'Victoria, BC', weight: 8 },
-  { x: 26, y: 62, label: 'Kelowna, BC', weight: 6 },
-  { x: 42, y: 52, label: 'Calgary, AB', weight: 14 },
-  { x: 40, y: 56, label: 'Edmonton, AB', weight: 10 },
-  { x: 48, y: 58, label: 'Regina, SK', weight: 5 },
-  { x: 52, y: 58, label: 'Winnipeg, MB', weight: 8 },
-  { x: 72, y: 58, label: 'Toronto, ON', weight: 12 },
-  { x: 70, y: 62, label: 'Ottawa, ON', weight: 5 },
-  { x: 82, y: 62, label: 'Montreal, QC', weight: 8 },
-  { x: 88, y: 68, label: 'Halifax, NS', weight: 4 },
-  { x: 28, y: 48, label: 'Prince George, BC', weight: 2 },
-];
-
-const JITTER_RANGE = 2.5; // ±2.5% so placement varies but stays in region
-
-function pickReadingLocation(): { x: number; y: number; label: string } {
-  const total = READING_LOCATIONS.reduce((s, l) => s + l.weight, 0);
-  let r = Math.random() * total;
-  for (const loc of READING_LOCATIONS) {
-    r -= loc.weight;
-    if (r <= 0) {
-      const jitter = () => (Math.random() - 0.5) * 2 * JITTER_RANGE;
-      return {
-        x: Math.max(2, Math.min(98, loc.x + jitter())),
-        y: Math.max(2, Math.min(98, loc.y + jitter())),
-        label: loc.label,
-      };
-    }
-  }
-  const last = READING_LOCATIONS[READING_LOCATIONS.length - 1];
-  const jitter = () => (Math.random() - 0.5) * 2 * JITTER_RANGE;
-  return {
-    x: last.x + jitter(),
-    y: last.y + jitter(),
-    label: last.label,
-  };
+/** Wind arrow on map: points in direction wind is blowing. wind_deg = meteorological (from which it blows). */
+function WindArrowSvg({ windDeg, size = 28 }: { windDeg: number; size?: number }) {
+  const rad = ((windDeg + 90) * Math.PI) / 180;
+  const len = size * 0.45;
+  const x = size / 2 + Math.cos(rad) * len;
+  const y = size / 2 + Math.sin(rad) * len;
+  const ax = x - 5 * Math.cos(rad) + 3 * Math.sin(rad);
+  const ay = y - 5 * Math.sin(rad) - 3 * Math.cos(rad);
+  const bx = x - 5 * Math.cos(rad) - 3 * Math.sin(rad);
+  const by = y - 5 * Math.sin(rad) + 3 * Math.cos(rad);
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="shrink-0 [color:var(--text-secondary)]" aria-hidden>
+      <line x1={size / 2} y1={size / 2} x2={x} y2={y} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <polygon points={`${x},${y} ${ax},${ay} ${bx},${by}`} fill="currentColor" />
+    </svg>
+  );
 }
 
 export default function HeatmapPage() {
@@ -64,8 +40,16 @@ export default function HeatmapPage() {
 
   const readingSpot = useMemo(() => {
     if (!hasAnalyzed || !uploadResult) return null;
-    return pickReadingLocation();
-  }, [hasAnalyzed, uploadResult?.timestamp]);
+    if (uploadResult.reading_location && 'x' in uploadResult.reading_location && 'label' in uploadResult.reading_location) {
+      return {
+        x: uploadResult.reading_location.x,
+        y: uploadResult.reading_location.y,
+        label: uploadResult.reading_location.label,
+      };
+    }
+    const loc = pickReadingLocation();
+    return { x: loc.x, y: loc.y, label: loc.label };
+  }, [hasAnalyzed, uploadResult?.timestamp, uploadResult?.reading_location]);
 
   return (
     <>
@@ -136,6 +120,19 @@ export default function HeatmapPage() {
                     className="absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-md [background:var(--maroon-400)]"
                     aria-hidden
                   />
+                  {uploadResult?.weather != null && (
+                    <div
+                      className="absolute left-1/2 top-1/2 flex items-center justify-center rounded bg-[var(--bg-card)]/90 p-1 shadow [color:var(--text-secondary)]"
+                      style={{
+                        transform: 'translate(calc(-50% + 14px), calc(-50% + 14px))',
+                        width: 32,
+                        height: 32,
+                      }}
+                      title={`Wind ${uploadResult.weather.wind_speed_kmh} km/h ${uploadResult.weather.wind_direction}`}
+                    >
+                      <WindArrowSvg windDeg={uploadResult.weather.wind_deg} size={24} />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -183,6 +180,14 @@ export default function HeatmapPage() {
                     <>
                       <span className="[color:var(--text-muted)]">Combustion</span>
                       <span>{uploadResult.combustion_indicators.join(', ')}</span>
+                    </>
+                  )}
+                  {uploadResult.weather != null && (
+                    <>
+                      <span className="[color:var(--text-muted)]">Wind</span>
+                      <span>{uploadResult.weather.wind_speed_kmh} km/h {uploadResult.weather.wind_direction}</span>
+                      <span className="[color:var(--text-muted)]">Humidity</span>
+                      <span>{uploadResult.weather.humidity_percent}%</span>
                     </>
                   )}
                 </div>

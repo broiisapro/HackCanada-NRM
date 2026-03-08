@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { FireDetectionResult, runPipeline } from './pipeline';
 import { readRecentEvents } from './logger';
+import type { WeatherSnapshot } from './weather';
 
 const RESULT_PATH = path.join(process.cwd(), 'output', 'result.json');
 
@@ -16,6 +17,8 @@ export interface MonitorStatus {
   last_checked: string;
   recent_events?: FireDetectionResult[];
   error?: string;
+  weather?: WeatherSnapshot;
+  reading_location?: { x: number; y: number; label: string; lat: number; lon: number };
 }
 
 let lastProcessedTimestamp: string | null = null;
@@ -61,6 +64,7 @@ export async function checkAndProcess(): Promise<MonitorStatus> {
   }
 
   const isDanger = result.fire_detected && result.confidence >= confidenceThreshold;
+  const resultWithWeather = result as FireDetectionResult & { weather?: WeatherSnapshot; reading_location?: { x: number; y: number; label: string; lat: number; lon: number } };
 
   return {
     status: isDanger ? 'danger' : 'safe',
@@ -72,5 +76,7 @@ export async function checkAndProcess(): Promise<MonitorStatus> {
     drafted_message: isDanger ? (lastDraftedMessage ?? undefined) : undefined,
     last_checked,
     recent_events,
+    weather: resultWithWeather.weather,
+    reading_location: resultWithWeather.reading_location,
   };
 }
