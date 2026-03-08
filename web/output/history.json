@@ -1,0 +1,416 @@
+[
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.99,
+    "risk_level": "high",
+    "indicators": [
+      "violet line at ~410nm",
+      "blue line at ~434nm",
+      "cyan line at ~486nm",
+      "red line at ~656nm",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T21:04:57.655696+00:00",
+    "image_path": "/Users/nitya/Documents/Projects/hackcanada/HackCanada-NRM/pyros-vision/input/image.png"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 1,
+    "risk_level": "high",
+    "indicators": [
+      "violet line at ~410nm",
+      "blue line at ~434nm",
+      "cyan line at ~486nm",
+      "red line at ~656nm",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T21:38:18.238Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "violet line at ~410nm",
+      "blue line at ~434nm",
+      "cyan line at ~486nm",
+      "red line at ~656nm",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T22:40:45.812Z"
+  },
+  {
+    "fire_detected": false,
+    "gases_detected": [],
+    "confidence": 1,
+    "risk_level": "low",
+    "indicators": [
+      "No flammable gases or combustion byproducts detected"
+    ],
+    "flammable_gases": [],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T22:41:53.056Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen",
+      "Sodium",
+      "Helium",
+      "Oxygen",
+      "Calcium",
+      "Mercury"
+    ],
+    "confidence": 0.88,
+    "risk_level": "high",
+    "indicators": [
+      "a faint violet line on the far left (around 393-397nm)",
+      "a strong violet line at approximately 410nm",
+      "a cluster of multiple blue-violet lines around 420-450nm, including distinct lines at ~423nm, ~434nm, ~436nm, and ~447nm",
+      "a distinct cyan line at approximately 486nm",
+      "a faint green line around 527-533nm",
+      "two closely spaced, brighter yellow-green lines around 533-546nm",
+      "a yellow line at approximately 578nm",
+      "a very bright, thick yellow line at approximately 588-589nm",
+      "two distinct orange lines around 615nm and 645nm",
+      "a strong red line at approximately 656nm",
+      "a distinct red line on the far right at approximately 668nm",
+      "Flammable: Hydrogen, Sodium"
+    ],
+    "flammable_gases": [
+      "Hydrogen",
+      "Sodium"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T22:43:06.090Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen",
+      "Calcium",
+      "Sodium",
+      "Helium"
+    ],
+    "confidence": 0.95,
+    "risk_level": "high",
+    "indicators": [
+      "distinct doublet of deep violet lines at far left (~393nm, ~397nm)",
+      "single violet line (~410nm)",
+      "single blue line (~434nm)",
+      "prominent cyan line (~486nm)",
+      "very bright and close yellow doublet (~589nm)",
+      "very strong red line (~656nm)",
+      "fainter red line located to the right of the strong red line (~668nm)",
+      "Flammable: Hydrogen, Sodium"
+    ],
+    "flammable_gases": [
+      "Hydrogen",
+      "Sodium"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T22:45:27.103Z"
+  },
+  {
+    "fire_detected": false,
+    "gases_detected": [],
+    "confidence": 0.5,
+    "risk_level": "low",
+    "indicators": [
+      "No distinct spectral lines are visible in the image.",
+      "A very faint, diffuse, and broad greenish-yellowish glow is present, but it lacks the sharp, discrete features characteristic of emission lines from specific elements.",
+      "No flammable gases or combustion byproducts detected"
+    ],
+    "flammable_gases": [],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T23:12:52.650Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.95,
+    "risk_level": "high",
+    "indicators": [
+      "A single prominent red emission line is visible, consistent with the H-alpha line of hydrogen.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T23:16:32.625Z"
+  },
+  {
+    "fire_detected": false,
+    "gases_detected": [],
+    "confidence": 0.5,
+    "risk_level": "low",
+    "indicators": [
+      "T",
+      "h",
+      "e",
+      " ",
+      "u",
+      "n",
+      "k",
+      "n",
+      "o",
+      "w",
+      "n",
+      " ",
+      "s",
+      "p",
+      "e",
+      "c",
+      "t",
+      "r",
+      "u",
+      "m",
+      " ",
+      "i",
+      "m",
+      "a",
+      "g",
+      "e",
+      " ",
+      "i",
+      "s",
+      " ",
+      "e",
+      "n",
+      "t",
+      "i",
+      "r",
+      "e",
+      "l",
+      "y",
+      " ",
+      "b",
+      "l",
+      "a",
+      "c",
+      "k",
+      ",",
+      " ",
+      "s",
+      "h",
+      "o",
+      "w",
+      "i",
+      "n",
+      "g",
+      " ",
+      "n",
+      "o",
+      " ",
+      "s",
+      "p",
+      "e",
+      "c",
+      "t",
+      "r",
+      "a",
+      "l",
+      " ",
+      "l",
+      "i",
+      "n",
+      "e",
+      "s",
+      " ",
+      "o",
+      "r",
+      " ",
+      "c",
+      "o",
+      "n",
+      "t",
+      "i",
+      "n",
+      "u",
+      "o",
+      "u",
+      "s",
+      " ",
+      "e",
+      "m",
+      "i",
+      "s",
+      "s",
+      "i",
+      "o",
+      "n",
+      ".",
+      " ",
+      "T",
+      "h",
+      "u",
+      "s",
+      ",",
+      " ",
+      "n",
+      "o",
+      " ",
+      "s",
+      "p",
+      "e",
+      "c",
+      "i",
+      "f",
+      "i",
+      "c",
+      " ",
+      "e",
+      "l",
+      "e",
+      "m",
+      "e",
+      "n",
+      "t",
+      "s",
+      " ",
+      "c",
+      "a",
+      "n",
+      " ",
+      "b",
+      "e",
+      " ",
+      "i",
+      "d",
+      "e",
+      "n",
+      "t",
+      "i",
+      "f",
+      "i",
+      "e",
+      "d",
+      " ",
+      "b",
+      "a",
+      "s",
+      "e",
+      "d",
+      " ",
+      "o",
+      "n",
+      " ",
+      "e",
+      "m",
+      "i",
+      "s",
+      "s",
+      "i",
+      "o",
+      "n",
+      " ",
+      "l",
+      "i",
+      "n",
+      "e",
+      "s",
+      ".",
+      "No flammable gases or combustion byproducts detected"
+    ],
+    "flammable_gases": [],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T23:17:33.435Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.95,
+    "risk_level": "high",
+    "indicators": [
+      "Two prominent violet lines in the short wavelength region.",
+      "A faint blue line.",
+      "Two cyan lines, one brighter and one fainter.",
+      "A distinct green line.",
+      "A very bright yellow doublet.",
+      "Two distinct orange lines.",
+      "A prominent red line.",
+      "A faint deep red line in the long wavelength region.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T23:23:34.272Z"
+  },
+  {
+    "fire_detected": false,
+    "gases_detected": [],
+    "confidence": 0.95,
+    "risk_level": "low",
+    "indicators": [
+      "We observe 10 distinct lines. From shortest to longest wavelength: a pair of violet lines, a single blue-violet line, a single blue-cyan line, a single green-blue line, a strong single green line, a pair of yellow lines, a fainter orange-red line, and a single red line. This pattern of multiple lines across violet, blue, green, yellow, and red, with a prominent green line and a yellow doublet, is characteristic of a Mercury emission spectrum.",
+      "No flammable gases or combustion byproducts detected"
+    ],
+    "flammable_gases": [],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T23:29:53.768Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.99,
+    "risk_level": "high",
+    "indicators": [
+      "There are 4 distinct emission lines. From left to right (shortest to longest wavelength): a violet line, followed by a dark blue line very close to it; then a cyan line with a moderate gap; and finally, a red line with a larger gap from the cyan line.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T23:30:33.024Z"
+  },
+  {
+    "fire_detected": false,
+    "gases_detected": [],
+    "confidence": 0,
+    "risk_level": "low",
+    "indicators": [
+      "Approximately 11 distinct emission lines are observed across the visible spectrum.",
+      "Multiple closely spaced lines are present in the deep violet/purple region on the far left.",
+      "A distinct light blue line is visible following the violet lines.",
+      "A prominent green line is located in the mid-left portion of the spectrum.",
+      "A doublet of two very close yellow lines is clearly visible in the middle of the spectrum.",
+      "A doublet of two very close orange lines is observed to the right of the yellow lines.",
+      "A distinct red line is present on the far right of the spectrum.",
+      "No flammable gases or combustion byproducts detected"
+    ],
+    "flammable_gases": [],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-07T23:30:50.106Z"
+  }
+]

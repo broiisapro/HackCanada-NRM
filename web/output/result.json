@@ -1,0 +1,19 @@
+{
+  "fire_detected": false,
+  "gases_detected": [],
+  "confidence": 0,
+  "risk_level": "low",
+  "indicators": [
+    "Approximately 11 distinct emission lines are observed across the visible spectrum.",
+    "Multiple closely spaced lines are present in the deep violet/purple region on the far left.",
+    "A distinct light blue line is visible following the violet lines.",
+    "A prominent green line is located in the mid-left portion of the spectrum.",
+    "A doublet of two very close yellow lines is clearly visible in the middle of the spectrum.",
+    "A doublet of two very close orange lines is observed to the right of the yellow lines.",
+    "A distinct red line is present on the far right of the spectrum.",
+    "No flammable gases or combustion byproducts detected"
+  ],
+  "flammable_gases": [],
+  "combustion_indicators": [],
+  "timestamp": "2026-03-07T23:30:50.106Z"
+}

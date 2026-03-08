@@ -1,0 +1,21 @@
+{
+  "fire_detected": true,
+  "gases_detected": [
+    "Hydrogen"
+  ],
+  "confidence": 0.98,
+  "risk_level": "high",
+  "indicators": [
+    "faint violet line at ~410nm",
+    "blue-violet line at ~434nm",
+    "prominent cyan line at ~486nm",
+    "prominent red line at ~656nm",
+    "Flammable: Hydrogen"
+  ],
+  "flammable_gases": [
+    "Hydrogen"
+  ],
+  "combustion_indicators": [],
+  "timestamp": "2026-03-07T20:55:08.326320+00:00",
+  "image_path": "input/processed/image.png"
+}
