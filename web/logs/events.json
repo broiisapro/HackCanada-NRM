@@ -841,5 +841,235 @@
       "To the far right of the continuous band, there is a single distinct discrete emission line observed in the yellow-orange region (longer wavelength).",
       "No flammable gases or combustion byproducts detected"
     ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "timestamp": "2026-03-08T06:29:52.098Z",
+    "risk_level": "high",
+    "indicators": [
+      "Four distinct emission lines are visible in the spectrum.",
+      "The leftmost line is violet, positioned on the far left of the visible range.",
+      "A second line, dark blue/indigo, is present to the right of the violet line.",
+      "A third line, cyan (light blue-green), is located to the right of the blue line, with a noticeable gap.",
+      "A fourth and final line, red in color, is observed on the far right side of the spectrum, with a large gap between it and the cyan line.",
+      "No emission lines are observed in the green or yellow regions of the spectrum.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "Four distinct emission lines are visible in the spectrum.",
+      "The leftmost line is violet, positioned on the far left of the visible range.",
+      "A second line, dark blue/indigo, is present to the right of the violet line.",
+      "A third line, cyan (light blue-green), is located to the right of the blue line, with a noticeable gap.",
+      "A fourth and final line, red in color, is observed on the far right side of the spectrum, with a large gap between it and the cyan line.",
+      "No emission lines are observed in the green or yellow regions of the spectrum.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T06:29:52.098Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "Four distinct emission lines are visible in the spectrum.",
+      "The leftmost line is violet, positioned on the far left of the visible range.",
+      "A second line, dark blue/indigo, is present to the right of the violet line.",
+      "A third line, cyan (light blue-green), is located to the right of the blue line, with a noticeable gap.",
+      "A fourth and final line, red in color, is observed on the far right side of the spectrum, with a large gap between it and the cyan line.",
+      "No emission lines are observed in the green or yellow regions of the spectrum.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T06:29:52.098Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.99,
+    "timestamp": "2026-03-08T07:44:08.937Z",
+    "risk_level": "high",
+    "indicators": [
+      "Four distinct emission lines are observed in the spectrum.",
+      "A strong violet line is present on the far left, characteristic of approximately 410 nm.",
+      "A dark blue line is observed slightly to the right of the violet line, at approximately 434 nm.",
+      "A cyan line is visible further to the right, with a distinct gap from the blue line, at approximately 486 nm.",
+      "A red line is prominently displayed significantly to the right, towards the longer wavelength end of the spectrum, at approximately 656 nm.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.99,
+    "risk_level": "high",
+    "indicators": [
+      "Four distinct emission lines are observed in the spectrum.",
+      "A strong violet line is present on the far left, characteristic of approximately 410 nm.",
+      "A dark blue line is observed slightly to the right of the violet line, at approximately 434 nm.",
+      "A cyan line is visible further to the right, with a distinct gap from the blue line, at approximately 486 nm.",
+      "A red line is prominently displayed significantly to the right, towards the longer wavelength end of the spectrum, at approximately 656 nm.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T07:44:08.937Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 1,
+    "timestamp": "2026-03-08T07:45:04.569Z",
+    "risk_level": "high",
+    "indicators": [
+      "Observed 4 distinct emission lines. From left to right: a prominent violet line, a fainter dark blue/indigo line, a distinct cyan/light blue line, and a distinct red line. The pattern, number, and colors of these lines perfectly match the reference spectrum for Hydrogen.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 1,
+    "risk_level": "high",
+    "indicators": [
+      "Observed 4 distinct emission lines. From left to right: a prominent violet line, a fainter dark blue/indigo line, a distinct cyan/light blue line, and a distinct red line. The pattern, number, and colors of these lines perfectly match the reference spectrum for Hydrogen.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T07:45:04.569Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "timestamp": "2026-03-08T07:47:17.908Z",
+    "risk_level": "high",
+    "indicators": [
+      "4 distinct lines observed.",
+      "Two lines are present in the violet/deep blue region on the far left of the spectrum, closely spaced.",
+      "One cyan-colored line is observed to the right of the violet/blue lines.",
+      "One prominent red line is present on the far right of the spectrum, indicating the longest wavelength line.",
+      "The characteristic pattern of two closely-spaced lines on the left, followed by a cyan line, and then a red line further to the right, matches the Balmer series.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "4 distinct lines observed.",
+      "Two lines are present in the violet/deep blue region on the far left of the spectrum, closely spaced.",
+      "One cyan-colored line is observed to the right of the violet/blue lines.",
+      "One prominent red line is present on the far right of the spectrum, indicating the longest wavelength line.",
+      "The characteristic pattern of two closely-spaced lines on the left, followed by a cyan line, and then a red line further to the right, matches the Balmer series.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T07:47:17.908Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "timestamp": "2026-03-08T07:49:44.136Z",
+    "risk_level": "high",
+    "indicators": [
+      "4 distinct lines are observed.",
+      "A violet line is present on the far left.",
+      "A blue-violet line is located to the right of the violet line.",
+      "A cyan line is positioned further to the right, distinctly separated from the blue-violet line.",
+      "A red line is visible on the far right of the spectrum, with a large gap from the cyan line.",
+      "The overall pattern of four lines (violet, blue, cyan, red) and their relative positions and spacing match the Balmer series of Hydrogen.",
+      "Flammable: Hydrogen"
+    ]
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "4 distinct lines are observed.",
+      "A violet line is present on the far left.",
+      "A blue-violet line is located to the right of the violet line.",
+      "A cyan line is positioned further to the right, distinctly separated from the blue-violet line.",
+      "A red line is visible on the far right of the spectrum, with a large gap from the cyan line.",
+      "The overall pattern of four lines (violet, blue, cyan, red) and their relative positions and spacing match the Balmer series of Hydrogen.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T07:49:44.136Z"
+  },
+  {
+    "fire_detected": true,
+    "gases_detected": [
+      "Hydrogen"
+    ],
+    "confidence": 0.98,
+    "risk_level": "high",
+    "indicators": [
+      "4 distinct lines are observed.",
+      "A violet line is present on the far left.",
+      "A blue-violet line is located to the right of the violet line.",
+      "A cyan line is positioned further to the right, distinctly separated from the blue-violet line.",
+      "A red line is visible on the far right of the spectrum, with a large gap from the cyan line.",
+      "The overall pattern of four lines (violet, blue, cyan, red) and their relative positions and spacing match the Balmer series of Hydrogen.",
+      "Flammable: Hydrogen"
+    ],
+    "flammable_gases": [
+      "Hydrogen"
+    ],
+    "combustion_indicators": [],
+    "timestamp": "2026-03-08T07:49:44.136Z"
   }
 ]

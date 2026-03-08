@@ -61,6 +61,10 @@ interface AppContextValue {
   chartData: ChartPoint[];
   gasBarData: { gas: string; count: number }[];
   hasAnalyzed: boolean;
+  callStatus: 'idle' | 'calling' | 'success' | 'error';
+  callError: string | null;
+  handleEmergencyCall: () => Promise<void>;
+  resetCallStatus: () => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -78,6 +82,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [uploadFile, setUploadFileState] = useState<File | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [uploadResult, setUploadResult] = useState<AnalyzeImageResult | null>(null);
+  const [callStatus, setCallStatus] = useState<'idle' | 'calling' | 'success' | 'error'>('idle');
+  const [callError, setCallError] = useState<string | null>(null);
 
   const setUploadFile = useCallback((file: File | null) => {
     setUploadFileState(file);
@@ -135,6 +141,41 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [uploadFile]);
 
+  const handleEmergencyCall = useCallback(async () => {
+    if (callStatus === 'calling') return;
+    setCallStatus('calling');
+    setCallError(null);
+    try {
+      const source = data ?? uploadResult;
+      const res = await fetch('/api/emergency-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          risk_level: source?.risk_level ?? 'unknown',
+          confidence: source?.confidence ?? 0,
+          gases_detected: source?.gases_detected ?? [],
+          indicators: source?.indicators ?? [],
+          drafted_message: data?.drafted_message ?? '',
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setCallStatus('success');
+      } else {
+        setCallStatus('error');
+        setCallError(json.error ?? 'Call failed');
+      }
+    } catch {
+      setCallStatus('error');
+      setCallError('Network error. Please try again.');
+    }
+  }, [callStatus, data, uploadResult]);
+
+  const resetCallStatus = useCallback(() => {
+    setCallStatus('idle');
+    setCallError(null);
+  }, []);
+
   const chartData: ChartPoint[] = history.map((entry) => ({
     time: formatTime(entry.timestamp),
     confidence: Math.round((entry.confidence ?? 0) * 100),
@@ -168,6 +209,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     chartData,
     gasBarData,
     hasAnalyzed,
+    callStatus,
+    callError,
+    handleEmergencyCall,
+    resetCallStatus,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

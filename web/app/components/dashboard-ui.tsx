@@ -153,6 +153,7 @@ export function UploadTab({
   onFileChange,
   onAnalyze,
   hasAnalyzed,
+  onCallEmergency,
 }: {
   selectedFile: File | null;
   analyzing: boolean;
@@ -160,6 +161,7 @@ export function UploadTab({
   onFileChange: (file: File | null) => void;
   onAnalyze: () => void;
   hasAnalyzed: boolean;
+  onCallEmergency?: () => void;
 }) {
   const inputId = 'upload-image-input';
   const riskColors: Record<string, string> = {
@@ -207,7 +209,7 @@ export function UploadTab({
             }`}
             aria-hidden
           />
-          <div>
+          <div className="flex-1">
             <p
               className={`text-lg font-bold tracking-tight ${
                 result.fire_detected ? 'text-[var(--maroon-400)]' : 'text-[var(--accent-success)]'
@@ -220,6 +222,18 @@ export function UploadTab({
               Analyzed at {new Date(result.timestamp).toLocaleTimeString()}
             </p>
           </div>
+          {onCallEmergency && (riskLevel === 'HIGH' || riskLevel === 'CRITICAL') && (
+            <button
+              type="button"
+              onClick={onCallEmergency}
+              className="press-active flex shrink-0 items-center gap-2 rounded-lg bg-[var(--maroon-600)] px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[var(--maroon-500)]"
+            >
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+              </svg>
+              Call Emergency
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -380,7 +394,7 @@ export function UploadTab({
 
 // ── Overview Tab ──
 
-export function OverviewTab({ data, chartData }: { data: MonitorStatus | null; chartData: ChartPoint[] }) {
+export function OverviewTab({ data, chartData, onCallEmergency }: { data: MonitorStatus | null; chartData: ChartPoint[]; onCallEmergency?: () => void }) {
   const noData = !data || data.status === 'no_data';
   const isDanger = data?.status === 'danger';
   const riskLevel = (data?.risk_level ?? '—').toUpperCase();
@@ -449,9 +463,23 @@ export function OverviewTab({ data, chartData }: { data: MonitorStatus | null; c
 
       {data?.drafted_message && (
         <Card className="stagger-6 !border-[var(--maroon-800)]">
-          <h3 className="mb-4 text-base font-bold tracking-wide text-[var(--maroon-400)]" style={{ fontFamily: 'var(--font-display)' }}>
-            AI Alert for First Responders
-          </h3>
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-base font-bold tracking-wide text-[var(--maroon-400)]" style={{ fontFamily: 'var(--font-display)' }}>
+              AI Alert for First Responders
+            </h3>
+            {onCallEmergency && (riskLevel === 'HIGH' || riskLevel === 'CRITICAL') && (
+              <button
+                type="button"
+                onClick={onCallEmergency}
+                className="press-active flex items-center gap-2 rounded-lg bg-[var(--maroon-600)] px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[var(--maroon-500)]"
+              >
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                </svg>
+                Call Emergency
+              </button>
+            )}
+          </div>
           <AlertContent message={data.drafted_message} />
         </Card>
       )}

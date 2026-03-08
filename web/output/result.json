@@ -1,15 +1,22 @@
 {
-  "fire_detected": false,
-  "gases_detected": [],
-  "confidence": 0.95,
-  "risk_level": "low",
-  "indicators": [
-    "The spectrum in image 6 features a prominent continuous rainbow band in its central region, smoothly transitioning from red through orange, yellow, green, and blue to violet. This central band exhibits no discrete emission lines.",
-    "To the far left of the continuous band, there is a single faint discrete emission line observed in the violet-blue region (shorter wavelength).",
-    "To the far right of the continuous band, there is a single distinct discrete emission line observed in the yellow-orange region (longer wavelength).",
-    "No flammable gases or combustion byproducts detected"
+  "fire_detected": true,
+  "gases_detected": [
+    "Hydrogen"
   ],
-  "flammable_gases": [],
+  "confidence": 0.98,
+  "risk_level": "high",
+  "indicators": [
+    "4 distinct lines are observed.",
+    "A violet line is present on the far left.",
+    "A blue-violet line is located to the right of the violet line.",
+    "A cyan line is positioned further to the right, distinctly separated from the blue-violet line.",
+    "A red line is visible on the far right of the spectrum, with a large gap from the cyan line.",
+    "The overall pattern of four lines (violet, blue, cyan, red) and their relative positions and spacing match the Balmer series of Hydrogen.",
+    "Flammable: Hydrogen"
+  ],
+  "flammable_gases": [
+    "Hydrogen"
+  ],
   "combustion_indicators": [],
-  "timestamp": "2026-03-08T04:11:59.305Z"
+  "timestamp": "2026-03-08T07:49:44.136Z"
 }
