@@ -1,0 +1,17 @@
+# ESP32 / serial
+pyserial>=3.5
+
+# IMU server
+flask>=3.0
+flask-cors>=4.0
+
+# IMU 3D visualizer
+vpython>=7.6
+
+# Pyros vision (Gemini, file watch)
+google-generativeai>=0.8
+python-dotenv>=1.0
+watchdog>=4.0
+
+# Model / hardware test (optional; heavy install)
+# tensorflow>=2.15
